@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://ec2-3-226-163-72.compute-1.amazonaws.com/d8ai6c8s0ghl2t?reconnect=true
+    username: eezkznqfuydlzk
+    password: 60cdae80380e917fefe4e541d48a4f9a338c5a6b20736c097ba871f8ab782e7b
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug
