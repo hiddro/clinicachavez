@@ -1,7 +1,6 @@
-package com.peru.srv.clinicachavez.domain;
+package com.peru.srv.clinicachavez.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sun.jdi.NativeMethodException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

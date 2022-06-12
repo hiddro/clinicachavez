@@ -1,5 +1,6 @@
-package com.peru.srv.clinicachavez.domain;
+package com.peru.srv.clinicachavez.models.entities;
 
+import com.peru.srv.clinicachavez.models.entities.Rol;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
