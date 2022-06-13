@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "ROL")
+@Table(name = "rol")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,19 +19,19 @@ public class Rol {
 
     @Id
     @GeneratedValue
-    @Column(name = "IDROL")
+    @Column(name = "idRol")
     private Integer idRol;
 
-    @Column(length = 50, name = "NOMBRE")
+    @Column(length = 50, name = "nombre")
     private String titulo;
 
-    @Column(length = 1, name = "ESTADO")
+    @Column(length = 1, name = "estado")
     private String estado;
 
     @ManyToMany
     @JsonBackReference
-    @JoinTable(name = "USUARIO_ROL",
-            joinColumns = @JoinColumn(name = "IDROL", referencedColumnName = "IDROL"),
-            inverseJoinColumns = @JoinColumn(name = "IDUSUARIO", referencedColumnName = "IDUSUARIO"))
+    @JoinTable(name = "usuario_rol",
+            joinColumns = @JoinColumn(name = "idRol", referencedColumnName = "idRol"),
+            inverseJoinColumns = @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario"))
     private List<Usuario> usuarios;
 }

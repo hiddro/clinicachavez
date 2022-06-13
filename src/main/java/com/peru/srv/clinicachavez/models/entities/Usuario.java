@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "USUARIO")
+@Table(name = "usuario")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -19,25 +19,25 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IDUSUARIO")
+    @Column(name = "idUsuario")
     private Integer idUsuario;
 
-    @Column(length = 50, name = "NOMBRE")
+    @Column(length = 50, name = "nombre")
     private String nombre;
 
-    @Column(length = 1, name = "ESTADO")
+    @Column(length = 1, name = "estado")
     private String estado;
 
-    @Column(length = 25, name = "USERNAME")
+    @Column(length = 25, name = "username")
     private String username;
 
-    @Column(length = 25, name = "PASSWORD")
+    @Column(length = 25, name = "password")
     private String password;
 
     @ManyToMany
-    @JoinTable(name = "USUARIO_ROL",
-            joinColumns = @JoinColumn(name = "IDUSUARIO", referencedColumnName = "IDUSUARIO"),
-            inverseJoinColumns = @JoinColumn(name = "IDROL", referencedColumnName = "IDROL"))
+    @JoinTable(name = "usuario_rol",
+            joinColumns = @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario"),
+            inverseJoinColumns = @JoinColumn(name = "idRol", referencedColumnName = "idRol"))
     private List<Rol> roles;
 
 }
