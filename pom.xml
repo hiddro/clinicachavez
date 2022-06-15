@@ -10,7 +10,7 @@
 	</parent>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>11</java.version>
 	</properties>
 
 	<groupId>com.peru.srv</groupId>
@@ -83,6 +83,12 @@
 			<artifactId>modelmapper</artifactId>
 			<version>2.4.5</version>
 		</dependency>
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.18.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
