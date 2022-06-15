@@ -11,6 +11,8 @@ spring:
       ddl-auto: update
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  application:
+    name: clinicachavez
 
 logging:
   level:
