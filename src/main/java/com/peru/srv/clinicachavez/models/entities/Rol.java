@@ -33,5 +33,5 @@ public class Rol {
     @JoinTable(name = "usuario_rol",
             joinColumns = @JoinColumn(name = "idRol", referencedColumnName = "idRol"),
             inverseJoinColumns = @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario"))
-    private List<Usuario> usuarios;
+    private List<Usuario> usuarios = new ArrayList<>();
 }

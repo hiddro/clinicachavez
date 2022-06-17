@@ -31,13 +31,13 @@ public class Usuario {
     @Column(length = 25, name = "username")
     private String username;
 
-    @Column(length = 25, name = "password")
+    @Column(length = 120, name = "password")
     private String password;
 
     @ManyToMany
     @JoinTable(name = "usuario_rol",
             joinColumns = @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario"),
             inverseJoinColumns = @JoinColumn(name = "idRol", referencedColumnName = "idRol"))
-    private List<Rol> roles;
+    private List<Rol> roles = new ArrayList<>();
 
 }

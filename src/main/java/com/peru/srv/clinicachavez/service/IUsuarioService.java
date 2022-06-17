@@ -11,7 +11,7 @@ public interface IUsuarioService {
 
     void addRolToUsuario(String username, String rol);
 
-    Optional<Usuario> getUsuario(String username);
+    Usuario getUsuario(String username);
 
     List<Usuario> getUsuarios();
 }

@@ -20,6 +20,26 @@ public class UsuarioController {
     @Autowired
     private IUsuarioService usuarioService;
 
+    @GetMapping(value = "/{username}")
+    public ResponseEntity<Usuario> obtenerUsuario(@PathVariable("username") String username){
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = null;
+
+        try {
+            usuario = usuarioService.getUsuario(username);
+
+        }catch (Exception e){
+            response.put("mensaje", "error al registra el usuario");
+            response.put("error", e.getMessage());
+            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.put("mensaje", "Se Obtuvo al Alumno");
+        response.put("alumno", usuario);
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
     @PostMapping(value = "/registro",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})

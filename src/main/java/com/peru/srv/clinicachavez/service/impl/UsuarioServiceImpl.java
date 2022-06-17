@@ -15,12 +15,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
 @Slf4j
+@Transactional
 public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
-
+//
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -76,8 +78,8 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
     }
 
     @Override
-    public Optional<Usuario> getUsuario(String username) {
-        return Optional.empty();
+    public Usuario getUsuario(String username) {
+        return usuarioRepository.findByUsername(username).get();
     }
 
     @Override
