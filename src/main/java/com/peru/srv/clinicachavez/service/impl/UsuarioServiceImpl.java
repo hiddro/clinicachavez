@@ -40,7 +40,7 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
             log.error("Usuario no existe");
             throw new UsernameNotFoundException("Usuario no existe");
         }else{
-            log.error("Usuario encontrado " + username);
+            log.info("Usuario encontrado " + username);
         }
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
