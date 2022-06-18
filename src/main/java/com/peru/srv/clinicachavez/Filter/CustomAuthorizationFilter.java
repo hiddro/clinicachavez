@@ -31,7 +31,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals(PATH_LOGIN)){
+        if(request.getServletPath().equals(PATH_LOGIN) || request.getServletPath().equals(PATH_TOKEN + "/refresh")){
             filterChain.doFilter(request, response);
         }else{
             String authorizationHeader = request.getHeader(AUTHORIZATION);
@@ -44,7 +44,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     DecodedJWT decodedJWT = verifier.verify(token);
 
                     String username = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("rolkes").asArray(String.class);
+                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
                     List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     stream(roles).forEach(role -> {
                         authorities.add(new SimpleGrantedAuthority(role));
