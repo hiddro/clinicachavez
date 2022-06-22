@@ -4,13 +4,14 @@ import com.peru.srv.clinicachavez.models.dto.UsuarioDTO;
 import com.peru.srv.clinicachavez.models.entities.Usuario;
 import com.peru.srv.clinicachavez.repositories.UsuarioRepository;
 import com.peru.srv.clinicachavez.service.IUsuarioService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +21,16 @@ import java.util.*;
 @Service
 @Slf4j
 @Transactional
-@RequiredArgsConstructor
 public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
+//
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    private final UsuarioRepository usuarioRepository;
-    private final ModelMapper modelMapper;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -33,20 +38,18 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
 
         if(!user.isPresent()){
             log.error("Usuario no existe");
-//            throw new UsernameNotFoundException("Usuario no existe");
-            throw new UsernameNotFoundException("User not found with username: " + username);
+            throw new UsernameNotFoundException("Usuario no existe");
         }else{
             log.info("Usuario encontrado " + username);
-            return new User(user.get().getUsername(), user.get().getPassword(), new ArrayList<>());
         }
 
-//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-//        user.get().getRoles()
-//                .forEach(role -> {authorities.add(new SimpleGrantedAuthority(role.getTitulo()));});
-//
-//        return new org.springframework.security.core.userdetails.User(user.get().getUsername(),
-//                user.get().getPassword(),
-//                authorities);
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.get().getRoles()
+                .forEach(role -> {authorities.add(new SimpleGrantedAuthority(role.getTitulo()));});
+
+        return new org.springframework.security.core.userdetails.User(user.get().getUsername(),
+                user.get().getPassword(),
+                authorities);
     }
 
     @Override
