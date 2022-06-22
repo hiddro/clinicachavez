@@ -2,6 +2,7 @@ package com.peru.srv.clinicachavez.Config;
 
 import com.peru.srv.clinicachavez.Filter.CustomAuthenticationFilter;
 import com.peru.srv.clinicachavez.Filter.CustomAuthorizationFilter;
+import com.peru.srv.clinicachavez.Filter.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -35,13 +37,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl(PATH_LOGIN);
+//
+//        http.csrf().disable();
+//        http.sessionManagement().sessionCreationPolicy(STATELESS);
+//        http.authorizeRequests().antMatchers( PATH_LOGIN + "/**", PATH_TOKEN + "/refresh/**").permitAll();
+//        http.authorizeRequests().antMatchers(GET, PATH_USUARIO + "/**").hasAnyAuthority("ROLE_USER");
+//        http.authorizeRequests().anyRequest().authenticated();
+//        http.addFilter(customAuthenticationFilter);
+//        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers( PATH_LOGIN + "/**", PATH_TOKEN + "/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers(GET, PATH_USUARIO + "/**").hasAnyAuthority("ROLE_USER");
-//        http.authorizeRequests().antMatchers(GET, PATH_ROL + "/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().anyRequest().authenticated();
+        http.csrf().disable()
+                .authorizeRequests().antMatchers(PATH_LOGIN).permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .and()
+                .sessionManagement().sessionCreationPolicy(STATELESS);
+
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
