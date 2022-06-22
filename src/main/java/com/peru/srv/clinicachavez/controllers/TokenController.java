@@ -1,75 +1,52 @@
 package com.peru.srv.clinicachavez.controllers;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.peru.srv.clinicachavez.models.entities.Rol;
-import com.peru.srv.clinicachavez.models.entities.Usuario;
-import com.peru.srv.clinicachavez.service.IUsuarioService;
+import com.peru.srv.clinicachavez.Filter.TokenManager;
+import com.peru.srv.clinicachavez.models.dto.JwtRequestDto;
+import com.peru.srv.clinicachavez.models.dto.JwtResponseDto;
+import com.peru.srv.clinicachavez.service.impl.UsuarioServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.peru.srv.clinicachavez.utils.Constant.*;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = PATH_TOKEN)
+@CrossOrigin
 public class TokenController {
 
     @Autowired
-    private IUsuarioService usuarioService;
+    private UsuarioServiceImpl usuarioService;
 
-    @GetMapping("/refresh")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-        if(authorizationHeader != null && authorizationHeader.startsWith(BEARER)){
-            try {
-                String refreshToken = authorizationHeader.substring(BEARER.length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refreshToken);
+    @Autowired
+    private TokenManager tokenManager;
 
-                String username = decodedJWT.getSubject();
-                Usuario user = usuarioService.getUsuario(username);
+    @PostMapping("/login")
+    public ResponseEntity<?> createToken(@RequestBody JwtRequestDto jwtRequestDto) throws Exception{
 
-                String accessToken = JWT.create()
-                        .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-                        .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles().stream().map(Rol::getTitulo).collect(Collectors.toList()))
-                        .sign(algorithm);
+        try {
 
-                Map<String, String> tokens = new HashMap<>();
-                tokens.put("accessToken", accessToken);
-                tokens.put("refreshToken", refreshToken);
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(jwtRequestDto.getUsername(),
+                            jwtRequestDto.getPassword())
+            );
 
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-
-            }catch (Exception e){
-                response.setHeader("error", e.getMessage());
-                response.setStatus(FORBIDDEN.value());
-//                    response.sendError(FORBIDDEN.value());
-                Map<String, String> error = new HashMap<>();
-                error.put("errorMessage", e.getMessage());
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), error);
-            }
-        }else{
-            throw new RuntimeException("Refresh token is missing!");
+        }catch (DisabledException e){
+            throw new Exception("USER DISABLED", e);
+        }catch (BadCredentialsException e){
+            throw new Exception("INVALID CREDENTIALS", e);
         }
+
+        final UserDetails userDetails = usuarioService.loadUserByUsername(jwtRequestDto.getUsername());
+        final String jwtToken = tokenManager.generateJwtToken(userDetails);
+        return ResponseEntity.ok(new JwtResponseDto(jwtToken));
+
     }
+
+
 }
