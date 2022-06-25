@@ -9,6 +9,10 @@ public interface IUsuarioService {
 
     Usuario saveUsuario(UsuarioDTO usuario);
 
+    Usuario updateUSuario(UsuarioDTO usuario, String username);
+
+    Usuario deleteUsuario(String username);
+
     void addRolToUsuario(String username, String rol);
 
     Usuario getUsuario(String username);

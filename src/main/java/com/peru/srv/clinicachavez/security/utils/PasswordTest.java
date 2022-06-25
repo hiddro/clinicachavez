@@ -1,4 +1,4 @@
-package com.peru.srv.clinicachavez.utils;
+package com.peru.srv.clinicachavez.security.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

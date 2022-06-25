@@ -1,4 +1,4 @@
-package com.peru.srv.clinicachavez.Filter;
+package com.peru.srv.clinicachavez.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.peru.srv.clinicachavez.utils.Constant.*;
+import static com.peru.srv.clinicachavez.security.utils.ConstantSecurity.*;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpStatus.*;
 

@@ -11,18 +11,18 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import static com.peru.srv.clinicachavez.utils.Constant.*;
 
 @Service
 @Slf4j
 @Transactional
 public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
-//
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -53,22 +53,52 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
     }
 
     @Override
-    public Usuario saveUsuario(UsuarioDTO usuarioDTO) {
+    public Usuario saveUsuario(UsuarioDTO usuario) {
         log.info("Creando nuevo Usuario para la BD!");
-        Optional<Usuario> user = usuarioRepository.findByUsername(usuarioDTO.getUsername());
+        Optional<Usuario> user = usuarioRepository.findByUsername(usuario.getUsername());
 
         if (user.isPresent()) {
             log.info("Usurio ya existe");
             throw new RuntimeException(user.get().getUsername() + " Existe!");
         }
 
-        Usuario userConvert = modelMapper.map(usuarioDTO, Usuario.class);
-        userConvert.setEstado("X");
-        userConvert.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
-        log.info("" + userConvert);
-        //return usuarioRepository.save(userConvert);
-        return null;
+        Usuario userConvert = modelMapper.map(usuario, Usuario.class);
+        userConvert.setEstado(ACTIVO);
+        userConvert.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
+        return usuarioRepository.save(userConvert);
+
+    }
+
+    @Override
+    public Usuario updateUSuario(UsuarioDTO usuario, String username) {
+        log.info("Actualizando Usuario " + username);
+        Optional<Usuario> user = usuarioRepository.findByUsername(username);
+
+        if (!user.isPresent()) {
+            log.info("Usurio no Existe!");
+            throw new RuntimeException(user.get().getUsername() + " No Existe!");
+        }
+
+        user.get().setNombre(usuario.getNombre());
+        user.get().setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        return usuarioRepository.save(user.get());
+    }
+
+    @Override
+    public Usuario deleteUsuario(String username) {
+        log.info("Eliminando estado del Usuario " + username);
+        Optional<Usuario> user = usuarioRepository.findByUsername(username);
+
+        if (!user.isPresent()) {
+            log.info("Usurio no Existe!");
+            throw new RuntimeException(user.get().getUsername() + " No Existe!");
+        }
+
+        user.get().setEstado(INACTIVO);
+
+        return usuarioRepository.save(user.get());
     }
 
     @Override
@@ -79,12 +109,14 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
 
     @Override
     public Usuario getUsuario(String username) {
+        log.info("Obteniendo Usuario por su Username!");
         return usuarioRepository.findByUsername(username).get();
     }
 
     @Override
     public List<Usuario> getUsuarios() {
-        return null;
+        log.info("Obteniendo Usuarios");
+        return usuarioRepository.findAll();
     }
 
 }

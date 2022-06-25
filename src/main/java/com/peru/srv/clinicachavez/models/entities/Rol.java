@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rol {
+public class Rol extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue
@@ -24,9 +25,6 @@ public class Rol {
 
     @Column(length = 50, name = "nombre")
     private String titulo;
-
-    @Column(length = 1, name = "estado")
-    private String estado;
 
     @ManyToMany
     @JsonBackReference

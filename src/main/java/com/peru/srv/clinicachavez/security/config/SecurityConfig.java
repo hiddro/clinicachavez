@@ -1,8 +1,8 @@
-package com.peru.srv.clinicachavez.Config;
+package com.peru.srv.clinicachavez.security.config;
 
-import com.peru.srv.clinicachavez.Filter.CustomAuthenticationFilter;
-import com.peru.srv.clinicachavez.Filter.CustomAuthorizationFilter;
-import com.peru.srv.clinicachavez.Filter.JwtAuthenticationEntryPoint;
+import com.peru.srv.clinicachavez.security.filter.CustomAuthenticationFilter;
+import com.peru.srv.clinicachavez.security.filter.CustomAuthorizationFilter;
+import com.peru.srv.clinicachavez.security.filter.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.peru.srv.clinicachavez.utils.Constant.*;
-import static org.springframework.http.HttpMethod.*;
+import static com.peru.srv.clinicachavez.security.utils.ConstantSecurity.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.*;
 
 @Configuration

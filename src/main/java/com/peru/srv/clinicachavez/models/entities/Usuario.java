@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Usuario {
+public class Usuario extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +25,6 @@ public class Usuario {
 
     @Column(length = 50, name = "nombre")
     private String nombre;
-
-    @Column(length = 1, name = "estado")
-    private String estado;
 
     @Column(length = 25, name = "username")
     private String username;

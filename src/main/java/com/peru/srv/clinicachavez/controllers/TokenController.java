@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.peru.srv.clinicachavez.utils.Constant.*;
+import static com.peru.srv.clinicachavez.security.utils.ConstantSecurity.*;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @RestController

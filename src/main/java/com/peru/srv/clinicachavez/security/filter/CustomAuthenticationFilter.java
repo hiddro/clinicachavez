@@ -1,4 +1,4 @@
-package com.peru.srv.clinicachavez.Filter;
+package com.peru.srv.clinicachavez.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

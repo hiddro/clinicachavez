@@ -20,22 +20,26 @@ public class UsuarioController {
     @Autowired
     private IUsuarioService usuarioService;
 
-    @GetMapping(value = "/{username}")
-    public ResponseEntity<Usuario> obtenerUsuario(@PathVariable("username") String username){
+    @GetMapping
+    public  ResponseEntity<List<Usuario>> obtenerUsuarios(){
         Map<String, Object> response = new HashMap<>();
-        Usuario usuario = null;
 
-        try {
-            usuario = usuarioService.getUsuario(username);
+        List<Usuario> usuarios = usuarioService.getUsuarios();
 
-        }catch (Exception e){
-            response.put("mensaje", "error al registra el usuario");
-            response.put("error", e.getMessage());
-            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        response.put("mensaje", "Se obtuvo los usuarios!");
+        response.put("Usuarios", usuarios);
 
-        response.put("mensaje", "Se Obtuvo al Alumno");
-        response.put("alumno", usuario);
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{username}")
+    public ResponseEntity<Usuario> obtenerUsuarioById(@PathVariable("username") String username){
+        Map<String, Object> response = new HashMap<>();
+
+        Usuario usuario = usuarioService.getUsuario(username);
+
+        response.put("mensaje", "Se Obtuvo al usuario!");
+        response.put("Usuario", usuario);
 
         return new ResponseEntity(response, HttpStatus.OK);
     }
@@ -56,11 +60,56 @@ public class UsuarioController {
             return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        response.put("mensaje", "Se registro el usuario correctamente");
+        response.put("mensaje", "Se registro el usuario correctamente!");
         response.put("usuario", usuario);
 
         return new ResponseEntity(response, HttpStatus.CREATED);
 
+    }
+
+    @PutMapping(value = "/{username}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Usuario> actualizarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO,
+                                                     @PathVariable("username") String username){
+
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = null;
+
+        try {
+            usuario = usuarioService.updateUSuario(usuarioDTO, username);
+        }catch (Exception e){
+            response.put("mensaje", "error al actualizar el usuario");
+            response.put("error", e.getMessage());
+            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.put("mensaje", "Se actualizo el usuario correctamente!");
+        response.put("usuario", usuario);
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{username}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("username") String username){
+
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = null;
+
+        try {
+            usuario = usuarioService.deleteUsuario(username);
+        }catch (Exception e){
+            response.put("mensaje", "error al eliminar el usuario");
+            response.put("error", e.getMessage());
+            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.put("mensaje", "Se elimino el usuario correctamente!");
+        response.put("usuario", usuario);
+
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
 }
