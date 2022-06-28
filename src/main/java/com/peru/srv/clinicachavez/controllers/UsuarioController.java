@@ -4,6 +4,7 @@ import com.peru.srv.clinicachavez.models.dto.UsuarioDTO;
 import com.peru.srv.clinicachavez.models.entities.Usuario;
 import com.peru.srv.clinicachavez.service.IUsuarioService;
 import com.peru.srv.clinicachavez.utils.Constant;
+import com.peru.srv.clinicachavez.utils.EstadoConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,11 +21,11 @@ public class UsuarioController {
     @Autowired
     private IUsuarioService usuarioService;
 
-    @GetMapping
-    public  ResponseEntity<List<Usuario>> obtenerUsuarios(){
+    @GetMapping(value = "/estado/{key}")
+    public  ResponseEntity<List<Usuario>> obtenerUsuarios(@PathVariable("key") EstadoConstant key){
         Map<String, Object> response = new HashMap<>();
 
-        List<Usuario> usuarios = usuarioService.getUsuarios();
+        List<Usuario> usuarios = usuarioService.getUsuarios(key);
 
         response.put("mensaje", "Se obtuvo los usuarios!");
         response.put("Usuarios", usuarios);

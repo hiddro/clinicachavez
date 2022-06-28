@@ -4,6 +4,7 @@ import com.peru.srv.clinicachavez.models.dto.UsuarioDTO;
 import com.peru.srv.clinicachavez.models.entities.Usuario;
 import com.peru.srv.clinicachavez.repositories.UsuarioRepository;
 import com.peru.srv.clinicachavez.service.IUsuarioService;
+import com.peru.srv.clinicachavez.utils.EstadoConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static com.peru.srv.clinicachavez.utils.Constant.*;
 
 @Service
@@ -114,9 +117,23 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
     }
 
     @Override
-    public List<Usuario> getUsuarios() {
+    public List<Usuario> getUsuarios(EstadoConstant key) {
         log.info("Obteniendo Usuarios");
-        return usuarioRepository.findAll();
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        String keyToString = key.toString();
+
+        if(validateKey(keyToString)){
+            return usuarios.stream()
+                    .filter(usuario -> usuario.getEstado().equalsIgnoreCase(keyToString))
+                    .collect(Collectors.toList());
+        }
+
+        return usuarios;
+    }
+
+    public Boolean validateKey(String keyToString){
+        log.info("Validado Key!");
+        return keyToString.equalsIgnoreCase(ACTIVO) || keyToString.equalsIgnoreCase(INACTIVO) ? true : false;
     }
 
 }

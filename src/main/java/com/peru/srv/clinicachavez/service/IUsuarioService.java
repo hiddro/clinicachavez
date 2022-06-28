@@ -2,6 +2,7 @@ package com.peru.srv.clinicachavez.service;
 
 import com.peru.srv.clinicachavez.models.dto.UsuarioDTO;
 import com.peru.srv.clinicachavez.models.entities.Usuario;
+import com.peru.srv.clinicachavez.utils.EstadoConstant;
 
 import java.util.*;
 
@@ -17,5 +18,5 @@ public interface IUsuarioService {
 
     Usuario getUsuario(String username);
 
-    List<Usuario> getUsuarios();
+    List<Usuario> getUsuarios(EstadoConstant key);
 }
