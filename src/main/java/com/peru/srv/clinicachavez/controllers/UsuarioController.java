@@ -27,19 +27,19 @@ public class UsuarioController {
 
         List<Usuario> usuarios = usuarioService.getUsuarios(key);
 
-        response.put("mensaje", "Se obtuvo los usuarios!");
+        response.put("mensaje", "Se obtuvo los Usuarios!");
         response.put("Usuarios", usuarios);
 
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<Usuario> obtenerUsuarioById(@PathVariable("username") String username){
+    public ResponseEntity<Usuario> obtenerUsuarioByUsername(@PathVariable("username") String username){
         Map<String, Object> response = new HashMap<>();
 
         Usuario usuario = usuarioService.getUsuario(username);
 
-        response.put("mensaje", "Se Obtuvo al usuario!");
+        response.put("mensaje", "Se Obtuvo al Usuario!");
         response.put("Usuario", usuario);
 
         return new ResponseEntity(response, HttpStatus.OK);
@@ -56,13 +56,13 @@ public class UsuarioController {
         try {
             usuario = usuarioService.saveUsuario(usuarioDTO);
         }catch (Exception e){
-            response.put("mensaje", "error al registra el usuario");
+            response.put("mensaje", "error al registra el Usuario");
             response.put("error", e.getMessage());
             return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        response.put("mensaje", "Se registro el usuario correctamente!");
-        response.put("usuario", usuario);
+        response.put("mensaje", "Se registro el Usuario correctamente!");
+        response.put("Usuario", usuario);
 
         return new ResponseEntity(response, HttpStatus.CREATED);
 
@@ -80,13 +80,13 @@ public class UsuarioController {
         try {
             usuario = usuarioService.updateUSuario(usuarioDTO, username);
         }catch (Exception e){
-            response.put("mensaje", "error al actualizar el usuario");
+            response.put("mensaje", "error al actualizar el Usuario");
             response.put("error", e.getMessage());
             return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        response.put("mensaje", "Se actualizo el usuario correctamente!");
-        response.put("usuario", usuario);
+        response.put("mensaje", "Se actualizo el Usuario correctamente!");
+        response.put("Usuario", usuario);
 
         return new ResponseEntity(response, HttpStatus.OK);
     }
@@ -102,13 +102,13 @@ public class UsuarioController {
         try {
             usuario = usuarioService.deleteUsuario(username);
         }catch (Exception e){
-            response.put("mensaje", "error al eliminar el usuario");
+            response.put("mensaje", "error al eliminar el Usuario");
             response.put("error", e.getMessage());
             return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        response.put("mensaje", "Se elimino el usuario correctamente!");
-        response.put("usuario", usuario);
+        response.put("mensaje", "Se elimino el Usuario correctamente!");
+        response.put("Usuario", usuario);
 
         return new ResponseEntity(response, HttpStatus.OK);
     }

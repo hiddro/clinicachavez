@@ -8,5 +8,5 @@ import java.util.*;
 
 @Repository
 public interface RolRepository extends JpaRepository<Rol, Integer> {
-    //Optional<Rol> findByRol(String titulo);
+    Optional<Rol> findByTitulo(String titulo);
 }
