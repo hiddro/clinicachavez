@@ -5,7 +5,7 @@ import com.peru.srv.clinicachavez.models.entities.Rol;
 import com.peru.srv.clinicachavez.repositories.RolRepository;
 import com.peru.srv.clinicachavez.service.IRolService;
 import com.peru.srv.clinicachavez.utils.EstadoConstant;
-import com.peru.srv.clinicachavez.utils.FunctionsUtils;
+import com.peru.srv.clinicachavez.utils.UtilsConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,6 @@ public class RolServiceImpl implements IRolService {
 
     @Autowired
     private ModelMapper modelMapper;
-
-    private FunctionsUtils functionsUtils;
 
     @Override
     public Rol saveRole(RolDTO rolDTO) {
@@ -60,7 +58,7 @@ public class RolServiceImpl implements IRolService {
         List<Rol> roles = rolRepository.findAll();
         String keyToString = key.toString();
 
-        if(functionsUtils.validateKey(keyToString)){
+        if(UtilsConstant.validateKey(keyToString)){
             return roles.stream()
                     .filter(rol -> rol.getEstado().equalsIgnoreCase(keyToString))
                     .collect(Collectors.toList());

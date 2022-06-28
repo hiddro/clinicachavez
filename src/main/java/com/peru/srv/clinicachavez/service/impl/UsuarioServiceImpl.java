@@ -5,7 +5,7 @@ import com.peru.srv.clinicachavez.models.entities.Usuario;
 import com.peru.srv.clinicachavez.repositories.UsuarioRepository;
 import com.peru.srv.clinicachavez.service.IUsuarioService;
 import com.peru.srv.clinicachavez.utils.EstadoConstant;
-import com.peru.srv.clinicachavez.utils.FunctionsUtils;
+import com.peru.srv.clinicachavez.utils.UtilsConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +35,6 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    private FunctionsUtils functionsUtils;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -125,7 +123,7 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
         List<Usuario> usuarios = usuarioRepository.findAll();
         String keyToString = key.toString();
 
-        if(functionsUtils.validateKey(keyToString)){
+        if(UtilsConstant.validateKey(keyToString)){
             return usuarios.stream()
                     .filter(usuario -> usuario.getEstado().equalsIgnoreCase(keyToString))
                     .collect(Collectors.toList());
