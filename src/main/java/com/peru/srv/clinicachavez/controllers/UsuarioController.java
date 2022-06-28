@@ -94,7 +94,7 @@ public class UsuarioController {
     @DeleteMapping(value = "/{username}",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Usuario> actualizarUsuario(@PathVariable("username") String username){
+    public ResponseEntity<Usuario> eliminarUsuario(@PathVariable("username") String username){
 
         Map<String, Object> response = new HashMap<>();
         Usuario usuario = null;

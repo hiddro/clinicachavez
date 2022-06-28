@@ -69,4 +69,26 @@ public class RolController {
         return new ResponseEntity(response, HttpStatus.CREATED);
     }
 
+    @DeleteMapping(value = "/{titulo}",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Rol> eliminarRol(@PathVariable("titulo") String titulo){
+        Map<String, Object> response = new HashMap<>();
+
+        Rol rol = null;
+
+        try {
+            rol = rolService.deleteRole(titulo);
+        }catch (Exception e){
+            response.put("mensaje", "error al eliminar el Rol");
+            response.put("error", e.getMessage());
+            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.put("mensaje", "Se elimino el Rol correctamente!");
+        response.put("Rol", rol);
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
 }

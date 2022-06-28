@@ -11,6 +11,8 @@ public interface IRolService {
 
     Rol saveRole(RolDTO rolDTO);
 
+    Rol deleteRole(String titulo);
+
     Rol getRol(String titulo);
 
     List<Rol> getRoles(EstadoConstant key);

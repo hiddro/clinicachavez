@@ -96,7 +96,7 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
         Optional<Usuario> user = usuarioRepository.findByUsername(username);
 
         if (!user.isPresent()) {
-            log.info("Usurio no Existe!");
+            log.info("Usuario no Existe!");
             throw new RuntimeException(user.get().getUsername() + " No Existe!");
         }
 

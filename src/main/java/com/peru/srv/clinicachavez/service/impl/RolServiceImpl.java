@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,6 +45,23 @@ public class RolServiceImpl implements IRolService {
         rolConvert.setEstado(ACTIVO);
 
         return rolRepository.save(rolConvert);
+    }
+
+    @Override
+    public Rol deleteRole(String titulo) {
+        log.info("Eliminando estado del Rol " + titulo);
+        Optional<Rol> role = rolRepository.findByTitulo(titulo);
+
+        if (!role.isPresent()) {
+            log.info("Rol no Existe!");
+            throw new RuntimeException(role.get().getTitulo() + " No Existe!");
+        }
+
+        role.get().setEstado(INACTIVO);
+        role.get().setCreateTime(new Date());
+        role.get().setUpdateTime(new Date());
+
+        return rolRepository.save(role.get());
     }
 
     @Override
