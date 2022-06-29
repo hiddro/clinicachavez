@@ -1,7 +1,9 @@
 package com.peru.srv.clinicachavez.service.impl;
 
 import com.peru.srv.clinicachavez.models.dto.UsuarioDTO;
+import com.peru.srv.clinicachavez.models.entities.Rol;
 import com.peru.srv.clinicachavez.models.entities.Usuario;
+import com.peru.srv.clinicachavez.repositories.RolRepository;
 import com.peru.srv.clinicachavez.repositories.UsuarioRepository;
 import com.peru.srv.clinicachavez.service.IUsuarioService;
 import com.peru.srv.clinicachavez.utils.EstadoConstant;
@@ -29,6 +31,9 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private RolRepository rolRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -106,8 +111,41 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
     }
 
     @Override
-    public void addRolToUsuario(String username, String rol) {
+    public Usuario addRolToUsuario(String username, String titulo) {
         log.info("Asignando Rol para el usuario");
+        Optional<Usuario> user = usuarioRepository.findByUsername(username);
+        Optional<Rol> role = rolRepository.findByTitulo(titulo);
+
+        if (!user.isPresent()) {
+            log.info("Usuario no Existe!");
+            throw new RuntimeException(user.get().getUsername() + " No Existe!");
+        }
+
+        if (!role.isPresent()) {
+            log.info("Rol no Existe!");
+            throw new RuntimeException(role.get().getTitulo() + " No Existe!");
+        }
+        if(role.get().getEstado().equalsIgnoreCase(INACTIVO)){
+            log.info("Rol no se puede agregar Eliminado!");
+            throw new RuntimeException(role.get().getTitulo() + " Eliminado!");
+        }
+
+        List<Rol> roles = user.get().getRoles().size() == 0 ? new ArrayList<>() : user.get().getRoles();
+        List<Rol> rolesUsuario = new ArrayList<>();
+        roles.stream()
+                .map(rol -> {
+                    if(rol.getIdRol().equals(role.get().getIdRol())){
+                        throw new RuntimeException(role.get().getTitulo() + " ya Existe para Usuario!");
+                    }
+
+                    return rolesUsuario.add(rol);
+                })
+                .collect(Collectors.toList());
+
+        rolesUsuario.add(role.get());
+        user.get().setRoles(rolesUsuario);
+
+        return user.get();
 
     }
 

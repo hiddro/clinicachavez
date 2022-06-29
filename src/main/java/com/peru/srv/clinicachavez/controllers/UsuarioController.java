@@ -1,5 +1,6 @@
 package com.peru.srv.clinicachavez.controllers;
 
+import com.peru.srv.clinicachavez.models.dto.RolToUsuarioDTO;
 import com.peru.srv.clinicachavez.models.dto.UsuarioDTO;
 import com.peru.srv.clinicachavez.models.entities.Usuario;
 import com.peru.srv.clinicachavez.service.IUsuarioService;
@@ -66,6 +67,27 @@ public class UsuarioController {
 
         return new ResponseEntity(response, HttpStatus.CREATED);
 
+    }
+
+    @PostMapping(value = "/addRol",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Usuario> agregarRolToUsuario(@Valid @RequestBody RolToUsuarioDTO rolToUsuarioDTO){
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = null;
+
+        try {
+            usuario = usuarioService.addRolToUsuario(rolToUsuarioDTO.getUsername(), rolToUsuarioDTO.getTitulo());
+        }catch (Exception e){
+            response.put("mensaje", "error al agregar Rol para el Usuario");
+            response.put("error", e.getMessage());
+            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.put("mensaje", "Se agrego el Rol para el Usuario correctamente!");
+        response.put("Usuario", usuario);
+
+        return new ResponseEntity(response, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{username}",

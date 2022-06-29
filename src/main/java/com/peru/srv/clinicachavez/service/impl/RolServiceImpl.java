@@ -58,8 +58,6 @@ public class RolServiceImpl implements IRolService {
         }
 
         role.get().setEstado(INACTIVO);
-        role.get().setCreateTime(new Date());
-        role.get().setUpdateTime(new Date());
 
         return rolRepository.save(role.get());
     }

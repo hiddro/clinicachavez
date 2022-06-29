@@ -14,7 +14,7 @@ public interface IUsuarioService {
 
     Usuario deleteUsuario(String username);
 
-    void addRolToUsuario(String username, String rol);
+    Usuario addRolToUsuario(String username, String titulo);
 
     Usuario getUsuario(String username);
 
