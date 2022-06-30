@@ -4,8 +4,7 @@ import com.peru.srv.clinicachavez.models.dto.RolDTO;
 import com.peru.srv.clinicachavez.models.entities.Rol;
 import com.peru.srv.clinicachavez.utils.EstadoConstant;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public interface IRolService {
 
