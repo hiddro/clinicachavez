@@ -16,6 +16,8 @@ public interface IUsuarioService {
 
     Usuario addRolToUsuario(String username, String titulo);
 
+    Usuario removeRolToUsuario(String username, String titulo);
+
     Usuario getUsuario(String username);
 
     List<Usuario> getUsuarios(EstadoConstant key);

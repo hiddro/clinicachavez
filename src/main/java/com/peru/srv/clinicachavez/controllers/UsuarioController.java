@@ -90,6 +90,27 @@ public class UsuarioController {
         return new ResponseEntity(response, HttpStatus.CREATED);
     }
 
+    @DeleteMapping(value = "/removeRol",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Usuario> removerRolToUsuario(@Valid @RequestBody RolToUsuarioDTO rolToUsuarioDTO){
+        Map<String, Object> response = new HashMap<>();
+        Usuario usuario = null;
+
+        try {
+            usuario = usuarioService.removeRolToUsuario(rolToUsuarioDTO.getUsername(), rolToUsuarioDTO.getTitulo());
+        }catch (Exception e){
+            response.put("mensaje", "error al Remover Rol para el Usuario");
+            response.put("error", e.getMessage());
+            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.put("mensaje", "Se removio el Rol para el Usuario correctamente!");
+        response.put("Usuario", usuario);
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
     @PutMapping(value = "/{username}",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})

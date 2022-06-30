@@ -112,7 +112,7 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
 
     @Override
     public Usuario addRolToUsuario(String username, String titulo) {
-        log.info("Asignando Rol para el usuario");
+        log.info("Asignando Rol para el usuario" + username);
         Optional<Usuario> user = usuarioRepository.findByUsername(username);
         Optional<Rol> role = rolRepository.findByTitulo(titulo);
 
@@ -132,21 +132,51 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
 
         List<Rol> roles = user.get().getRoles().size() == 0 ? new ArrayList<>() : user.get().getRoles();
         List<Rol> rolesUsuario = new ArrayList<>();
+
         roles.stream()
-                .map(rol -> {
+                .forEach(rol -> {
                     if(rol.getIdRol().equals(role.get().getIdRol())){
                         throw new RuntimeException(role.get().getTitulo() + " ya Existe para Usuario!");
                     }
 
-                    return rolesUsuario.add(rol);
-                })
-                .collect(Collectors.toList());
+                    rolesUsuario.add(rol);
+                });
 
         rolesUsuario.add(role.get());
         user.get().setRoles(rolesUsuario);
 
         return user.get();
 
+    }
+
+    @Override
+    public Usuario removeRolToUsuario(String username, String titulo) {
+        log.info("Removiendo Rol para el usuario" + username);
+        Optional<Usuario> user = usuarioRepository.findByUsername(username);
+        Optional<Rol> role = rolRepository.findByTitulo(titulo);
+
+        if (!user.isPresent()) {
+            log.info("Usuario no Existe!");
+            throw new RuntimeException(user.get().getUsername() + " No Existe!");
+        }
+
+        if (!role.isPresent()) {
+            log.info("Rol no Existe!");
+            throw new RuntimeException(role.get().getTitulo() + " No Existe!");
+        }
+        if(role.get().getEstado().equalsIgnoreCase(INACTIVO)){
+            log.info("Rol no se puede agregar Eliminado!");
+            throw new RuntimeException(role.get().getTitulo() + " Eliminado!");
+        }
+
+        List<Rol> roles = user.get().getRoles().size() == 0 ? new ArrayList<>() : user.get().getRoles();
+        List<Rol> rolesUsuario = roles.stream()
+                .filter(rol -> !rol.getIdRol().equals(role.get().getIdRol()))
+                .collect(Collectors.toList());
+
+        user.get().setRoles(rolesUsuario);
+
+        return user.get();
     }
 
     @Override
