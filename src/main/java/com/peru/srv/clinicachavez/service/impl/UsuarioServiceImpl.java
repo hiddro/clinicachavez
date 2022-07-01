@@ -86,7 +86,7 @@ public class UsuarioServiceImpl implements IUsuarioService, UserDetailsService {
 
         if (!user.isPresent()) {
             log.info("Usurio no Existe!");
-            throw new RuntimeException(user.get().getUsername() + " No Existe!");
+            throw new RuntimeException(username + " No Existe!");
         }
 
         user.get().setNombre(usuario.getNombre());

@@ -53,7 +53,7 @@ public class RolServiceImpl implements IRolService {
 
         if (!role.isPresent()) {
             log.info("Rol no Existe!");
-            throw new RuntimeException(role.get().getTitulo() + " No Existe!");
+            throw new RuntimeException(titulo + " No Existe!");
         }
 
         role.get().setEstado(INACTIVO);

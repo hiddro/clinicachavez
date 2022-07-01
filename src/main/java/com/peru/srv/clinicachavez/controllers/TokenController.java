@@ -5,17 +5,22 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.peru.srv.clinicachavez.models.dto.NewTokenDTO;
+import com.peru.srv.clinicachavez.models.dto.TokenPropertiesDTO;
 import com.peru.srv.clinicachavez.models.entities.Rol;
+import com.peru.srv.clinicachavez.models.entities.TokenProperties;
 import com.peru.srv.clinicachavez.models.entities.Usuario;
+import com.peru.srv.clinicachavez.service.ITokenService;
 import com.peru.srv.clinicachavez.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,6 +35,63 @@ public class TokenController {
 
     @Autowired
     private IUsuarioService usuarioService;
+
+    @Autowired
+    private ITokenService tokenService;
+
+    @PostMapping(value = "/register",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<TokenProperties> crearToken(@Valid @RequestBody TokenPropertiesDTO tokenDto){
+        Map<String, Object> response = new HashMap<>();
+        TokenProperties tokenProperties = null;
+
+        try {
+            tokenProperties = tokenService.saveToken(tokenDto);
+        }catch (Exception e){
+            response.put("mensaje", "error al generar el token");
+            response.put("error", e.getMessage());
+            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.put("mensaje", "Se genero el token");
+        response.put("Token", tokenProperties);
+
+        return new ResponseEntity(response, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/actualizar",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<TokenProperties> actualizarToken(@Valid @RequestBody NewTokenDTO newTokenDto){
+        Map<String, Object> response = new HashMap<>();
+        TokenProperties tokenProperties = null;
+
+        try {
+            tokenProperties = tokenService.updateToken(newTokenDto);
+        }catch (Exception e){
+            response.put("mensaje", "error al actuaizar el token");
+            response.put("error", e.getMessage());
+            return new ResponseEntity(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        response.put("mensaje", "Se actualizo el token");
+        response.put("Token", tokenProperties);
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TokenProperties>> obtenerTokens(){
+        Map<String, Object> response = new HashMap<>();
+
+        List<TokenProperties> allTokens = tokenService.getAllToken();
+
+        response.put("mensaje", "Se obtuvo los tokens");
+        response.put("Tokens", allTokens);
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
 
     @GetMapping("/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
