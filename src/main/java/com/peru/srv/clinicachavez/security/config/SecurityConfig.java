@@ -3,6 +3,7 @@ package com.peru.srv.clinicachavez.security.config;
 import com.peru.srv.clinicachavez.security.filter.CustomAuthenticationFilter;
 import com.peru.srv.clinicachavez.security.filter.CustomAuthorizationFilter;
 import com.peru.srv.clinicachavez.security.filter.JwtAuthenticationEntryPoint;
+import com.peru.srv.clinicachavez.service.ITokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final ITokenService tokenService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -34,7 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(),
+                tokenService);
         customAuthenticationFilter.setFilterProcessesUrl(PATH_LOGIN);
 //
 //        http.csrf().disable();
@@ -55,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(STATELESS);
 
         http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new CustomAuthorizationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

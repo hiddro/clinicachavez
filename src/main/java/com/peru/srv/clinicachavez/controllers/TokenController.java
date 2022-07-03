@@ -96,11 +96,12 @@ public class TokenController {
     @GetMapping("/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
+        TokenProperties tokenProperties = tokenService.getAllToken().get(0);
 
         if(authorizationHeader != null && authorizationHeader.startsWith(BEARER)){
             try {
                 String refreshToken = authorizationHeader.substring(BEARER.length());
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                Algorithm algorithm = Algorithm.HMAC256(tokenProperties.getToken().getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
 
@@ -111,12 +112,12 @@ public class TokenController {
                         .withSubject(user.getUsername())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles().stream().map(Rol::getTitulo).collect(Collectors.toList()))
+                        .withClaim(CLAIM_ROLES, user.getRoles().stream().map(Rol::getTitulo).collect(Collectors.toList()))
                         .sign(algorithm);
 
                 Map<String, String> tokens = new HashMap<>();
-                tokens.put("accessToken", accessToken);
-                tokens.put("refreshToken", refreshToken);
+                tokens.put(ACCES_TOKEN, accessToken);
+                tokens.put(REFRESH_TOKEN, refreshToken);
 
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);

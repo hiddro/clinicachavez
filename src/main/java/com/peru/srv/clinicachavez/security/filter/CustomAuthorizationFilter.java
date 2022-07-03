@@ -5,6 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.peru.srv.clinicachavez.models.entities.TokenProperties;
+import com.peru.srv.clinicachavez.service.ITokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,11 +25,21 @@ import static com.peru.srv.clinicachavez.security.utils.ConstantSecurity.*;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpStatus.*;
 
+import static com.peru.srv.clinicachavez.security.utils.ConstantSecurity.*;
+
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
+    private final ITokenService tokenService;
+
+    public CustomAuthorizationFilter(ITokenService tokenService) {
+        this.tokenService = tokenService;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        TokenProperties tokenProperties = tokenService.getAllToken().get(0);
+
         if(request.getServletPath().equals(PATH_LOGIN) || request.getServletPath().equals(PATH_TOKEN + "/refresh")){
             filterChain.doFilter(request, response);
         }else{
@@ -36,12 +48,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             if(authorizationHeader != null && authorizationHeader.startsWith(BEARER)){
                 try {
                     String token = authorizationHeader.substring(BEARER.length());
-                    Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                    Algorithm algorithm = Algorithm.HMAC256(tokenProperties.getToken().getBytes());
                     JWTVerifier verifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
 
                     String username = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                    String[] roles = decodedJWT.getClaim(CLAIM_ROLES).asArray(String.class);
                     List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     stream(roles).forEach(role -> {
                         authorities.add(new SimpleGrantedAuthority(role));
